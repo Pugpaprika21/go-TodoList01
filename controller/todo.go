@@ -14,38 +14,89 @@ type Todo struct{}
 
 var appUrl = os.Getenv("APP_URL") + os.Getenv("APP_NAME")
 
-func (t *Todo) Index(ctx *gin.Context) {
+func (t *Todo) Login(ctx *gin.Context) {
 	session := sessions.Default(ctx)
-	session.Set("username", "alex")
+	session.Clear()
 	session.Save()
 
-	ctx.HTML(http.StatusOK, "todo.html", gin.H{
+	ctx.HTML(http.StatusOK, "login.html", gin.H{
 		"url":   appUrl + "/create",
 		"title": "Todo-list",
 	})
 }
 
+func (t *Todo) CheckLogin(ctx *gin.Context) {
+	username := ctx.PostForm("username")
+	password := ctx.PostForm("password")
+
+	var user model.User
+	if err := db.Conn.Where("username = ? AND password = ?", username, password).First(&user).Error; err != nil {
+		user.Username = username
+		user.Password = password
+		user.Status = 1
+		db.Conn.Create(&user)
+		ctx.Redirect(http.StatusSeeOther, "/todo/login")
+		return
+	}
+	session := sessions.Default(ctx)
+	session.Set("userId", user.ID)
+	session.Set("username", user.Username)
+	session.Set("password", user.Password)
+	session.Set("status", user.Status)
+	session.Save()
+	ctx.Redirect(http.StatusSeeOther, "/todo/index")
+}
+
+func (t *Todo) Index(ctx *gin.Context) {
+	session := sessions.Default(ctx)
+	userId := session.Get("userId")
+	username := session.Get("username")
+	password := session.Get("password")
+
+	if userId == nil {
+		ctx.Redirect(http.StatusSeeOther, "/todo/login")
+		return
+	}
+
+	ctx.HTML(http.StatusOK, "todo.html", gin.H{
+		"user": gin.H{
+			"userId":   userId,
+			"username": username,
+			"password": password,
+		},
+		"title": "Todo-list",
+	})
+}
+
 func (t *Todo) Create(ctx *gin.Context) {
+	session := sessions.Default(ctx)
+
+	userId := session.Get("userId")
 	title := ctx.PostForm("title")
 	description := ctx.PostForm("description")
 
-	session := sessions.Default(ctx)
-	username := session.Get("username").(string)
-
-	user := model.User{
-		Username: username,
-		Password: "1234",
-		Status:   1,
+	if userId == nil {
+		ctx.Redirect(http.StatusSeeOther, "/todo/login")
+		return
 	}
-	db.Conn.Create(&user)
 
 	todo := model.Todo{
 		Title:       title,
 		Description: description,
-		UserID:      user.ID,
+		UserID:      userId.(uint),
 	}
 
 	db.Conn.Create(&todo)
+	ctx.Redirect(http.StatusSeeOther, "/todo/index")
+}
 
-	ctx.Redirect(http.StatusCreated, appUrl+"/index")
+func (t *Todo) LoginOut(ctx *gin.Context) {
+	session := sessions.Default(ctx)
+	userId := session.Get("userId")
+	if userId != nil {
+		session.Clear()
+		session.Save()
+		ctx.Redirect(http.StatusSeeOther, "/todo/login")
+		return
+	}
 }

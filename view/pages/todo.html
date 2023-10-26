@@ -3,10 +3,11 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            Add todo
+            Add todo {{ .user.userId }}
         </div>
         <div class="card-body">
-            <form id="form-myTodo" action="{{ .url }}" method="post">
+            <a class="btn btn-danger" href="/todo/LoginOut" role="button">LoginOut</a>
+            <form id="form-myTodo" action="/todo/create" method="post">
                 <div class="mb-3">
                     <label for="title" class="form-label">title</label>
                     <input type="text" class="form-control" id="title" name="title">
