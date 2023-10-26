@@ -58,12 +58,16 @@ func (t *Todo) Index(ctx *gin.Context) {
 		return
 	}
 
+	var todos []model.Todo
+	db.Conn.Where("user_id = ?", userId).Find(&todos)
+
 	ctx.HTML(http.StatusOK, "todo.html", gin.H{
 		"user": gin.H{
 			"userId":   userId,
 			"username": username,
 			"password": password,
 		},
+		"todos": todos,
 		"title": "Todo-list",
 	})
 }
@@ -90,13 +94,9 @@ func (t *Todo) Create(ctx *gin.Context) {
 	ctx.Redirect(http.StatusSeeOther, "/todo/index")
 }
 
-func (t *Todo) LoginOut(ctx *gin.Context) {
+func (t *Todo) LogOut(ctx *gin.Context) {
 	session := sessions.Default(ctx)
-	userId := session.Get("userId")
-	if userId != nil {
-		session.Clear()
-		session.Save()
-		ctx.Redirect(http.StatusSeeOther, "/todo/login")
-		return
-	}
+	session.Clear()
+	session.Save()
+	ctx.Redirect(http.StatusSeeOther, "/todo/login")
 }

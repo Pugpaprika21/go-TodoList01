@@ -14,5 +14,5 @@ func serveRoutes(r *gin.Engine) {
 	todoGroup.POST("/checkLogin", todoController.CheckLogin)
 	todoGroup.GET("/index", todoController.Index)
 	todoGroup.POST("/create", todoController.Create)
-	todoGroup.GET("/LoginOut", todoController.LoginOut)
+	todoGroup.GET("/LogOut", todoController.LogOut)
 }
