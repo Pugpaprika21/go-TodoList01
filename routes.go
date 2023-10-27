@@ -6,13 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func serveRoutes(r *gin.Engine) {
+func serveRoutes(router *gin.Engine) {
 	todoController := controller.Todo{}
-	todoGroup := r.Group("/todo")
+	todoGroup := router.Group("/todo")
 
 	todoGroup.GET("/login", todoController.Login)
 	todoGroup.POST("/checkLogin", todoController.CheckLogin)
 	todoGroup.GET("/index", todoController.Index)
 	todoGroup.POST("/create", todoController.Create)
-	todoGroup.GET("/LogOut", todoController.LogOut)
+	todoGroup.GET("/logout", todoController.Logout)
 }

@@ -2,8 +2,10 @@ package main
 
 import (
 	"go-TodoList/db"
+	"go-TodoList/helper"
 	"log"
 	"os"
+	"text/template"
 
 	//"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
@@ -25,19 +27,25 @@ func main() {
 	db.ConnectDB()
 	db.Migrate()
 
-	r := gin.Default()
-
 	store := cookie.NewStore([]byte("secret"))
-	r.Use(sessions.Sessions("mysession", store))
-	r.LoadHTMLGlob("view/**/*")
-	r.Static("/assets", "./assets")
 
-	serveRoutes(r)
+	router := gin.Default()
+	router.Use(sessions.Sessions("mysession", store))
+
+	router.SetFuncMap(template.FuncMap{
+		"Rows": helper.NumRows,
+		"DMY":  helper.GetDMY,
+	})
+
+	router.LoadHTMLGlob("view/**/*")
+	router.Static("/assets", "./assets")
+
+	serveRoutes(router)
 
 	port := os.Getenv("PORT")
 	if port != "" {
 		port = "5000"
 	}
 
-	r.Run(":" + port)
+	router.Run(":" + port)
 }

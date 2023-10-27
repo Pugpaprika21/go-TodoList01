@@ -1,10 +1,11 @@
 package controller
 
 import (
+	"fmt"
 	"go-TodoList/db"
 	"go-TodoList/model"
 	"net/http"
-	"os"
+	"time"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -12,15 +13,12 @@ import (
 
 type Todo struct{}
 
-var appUrl = os.Getenv("APP_URL") + os.Getenv("APP_NAME")
-
 func (t *Todo) Login(ctx *gin.Context) {
 	session := sessions.Default(ctx)
 	session.Clear()
 	session.Save()
 
 	ctx.HTML(http.StatusOK, "login.html", gin.H{
-		"url":   appUrl + "/create",
 		"title": "Todo-list",
 	})
 }
@@ -28,6 +26,11 @@ func (t *Todo) Login(ctx *gin.Context) {
 func (t *Todo) CheckLogin(ctx *gin.Context) {
 	username := ctx.PostForm("username")
 	password := ctx.PostForm("password")
+
+	if username == "" && password == "" {
+		ctx.Redirect(http.StatusSeeOther, "/todo/login")
+		return
+	}
 
 	var user model.User
 	if err := db.Conn.Where("username = ? AND password = ?", username, password).First(&user).Error; err != nil {
@@ -59,7 +62,12 @@ func (t *Todo) Index(ctx *gin.Context) {
 	}
 
 	var todos []model.Todo
-	db.Conn.Where("user_id = ?", userId).Find(&todos)
+	db.Conn.Order("created_at DESC").Where("user_id = ?", userId).Find(&todos)
+
+	currentTime := time.Now()
+	dmyFormat := currentTime.Format("2006-01-02")
+	fmt.Println("######################################################")
+	fmt.Println(dmyFormat)
 
 	ctx.HTML(http.StatusOK, "todo.html", gin.H{
 		"user": gin.H{
@@ -67,8 +75,9 @@ func (t *Todo) Index(ctx *gin.Context) {
 			"username": username,
 			"password": password,
 		},
-		"todos": todos,
-		"title": "Todo-list",
+		"nowDMY": dmyFormat,
+		"todos":  todos,
+		"title":  "Todo-list",
 	})
 }
 
@@ -94,7 +103,15 @@ func (t *Todo) Create(ctx *gin.Context) {
 	ctx.Redirect(http.StatusSeeOther, "/todo/index")
 }
 
-func (t *Todo) LogOut(ctx *gin.Context) {
+func (t *Todo) Edit(ctx *gin.Context) {
+	todoId := ctx.Param("id")
+	session := sessions.Default(ctx)
+	userId := session.Get("userId")
+
+	ctx.String(http.StatusAccepted, todoId+""+userId.(string))
+}
+
+func (t *Todo) Logout(ctx *gin.Context) {
 	session := sessions.Default(ctx)
 	session.Clear()
 	session.Save()

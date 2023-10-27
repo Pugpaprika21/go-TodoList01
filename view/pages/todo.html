@@ -1,36 +1,67 @@
 {{ template "layout/header.html" .}}
 
-<div class="container">
-    <div class="card">
-        <div class="card-header">
-            Add todo {{ .user.userId }}
+<div class="container" style="margin-top: 50px;">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">
+                    New todo : {{ .user.username }} {{ .user.password }}
+                </div>
+                <div class="card-body">
+                    <div class="form-craete-todo">
+                        <form id="submit-form-todo" action="/todo/create" method="post">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">หัวข้อ</label>
+                                <input type="text" class="form-control" id="title" name="title">
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">รายละเอียด</label>
+                                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="btn-create-todo">save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <a class="btn btn-danger" href="/todo/LogOut" role="button">LogOut</a>
-            <form id="form-myTodo" action="/todo/create" method="post">
-                <div class="mb-3">
-                    <label for="title" class="form-label">title</label>
-                    <input type="text" class="form-control" id="title" name="title">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-user-todo">
+                        <table class="table table-borderless" id="table-todo" class="display">
+                            <thead>
+                                <tr>
+                                    <td>#</td>
+                                    <td>หัวข้อ</td>
+                                    <td>รายละเอียด</td>
+                                    <td>สร้าง</td>
+                                    <td>จัดการ</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{ range $index, $todo := .todos }}
+                                <tr id="{{ $index }}">
+                                    <td>{{ Rows $index }}</td>
+                                    <td>{{ $todo.Title }}</td>
+                                    <td>{{ $todo.Description }}</td>
+                                    <td>{{ DMY $todo.CreatedAt }} </td>
+                                    <td>
+                                        {{ if eq (DMY $todo.CreatedAt) (.nowDMY) }}
+                                        <button class="button button5">เเก้ไข</button> {{ else }}
+                                        <button class="button button5" disabled>ไม่สามารถเเก้ไข</button> {{ end }}
+                                        <button class="button button3">ลบ</button>
+                                    </td>
+                                </tr>
+                                {{ end }}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">description</label>
-                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">save</button>
-            </form>
-
-            <!--  -->
-
-            <br>
-
-            <ul>
-                {{ range .todos }}
-                <li>{{ .Title }}</li>
-                {{ end }}
-            </ul>
-
+            </div>
         </div>
     </div>
 </div>
 
 {{ template "layout/footer.html" .}}
+
+<!--         <a class="btn btn-danger" href="/todo/logout" role="button">logout</a> -->
