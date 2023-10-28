@@ -5,7 +5,7 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-header">
-                    New todo : {{ .user.username }} {{ .user.password }}
+                    New todo : {{ .user.username }} {{ .user.password }} {{ .nowDMY }}
                 </div>
                 <div class="card-body">
                     <div class="form-craete-todo">
@@ -39,6 +39,8 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {{ $nowDMY := .nowDMY }}
+                                <!--  -->
                                 {{ range $index, $todo := .todos }}
                                 <tr id="{{ $index }}">
                                     <td>{{ Rows $index }}</td>
@@ -46,13 +48,19 @@
                                     <td>{{ $todo.Description }}</td>
                                     <td>{{ DMY $todo.CreatedAt }} </td>
                                     <td>
-                                        {{ if eq (DMY $todo.CreatedAt) (.nowDMY) }}
-                                        <button class="button button5">เเก้ไข</button> {{ else }}
-                                        <button class="button button5" disabled>ไม่สามารถเเก้ไข</button> {{ end }}
+                                        {{ $todoDMY := DMY $todo.CreatedAt }}
+                                        <!--  -->
+                                        {{ if eq $todoDMY $nowDMY }}
+                                        <button class="button button5">แก้ไข</button>
                                         <button class="button button3">ลบ</button>
+                                        <!--  -->
+                                        {{ end }}
                                     </td>
                                 </tr>
                                 {{ end }}
+
+
+
                             </tbody>
                         </table>
                     </div>
@@ -63,5 +71,11 @@
 </div>
 
 {{ template "layout/footer.html" .}}
+
+<!-- 
+
+                   <button class="button button5">เเก้ไข</button>
+                                        <button class="button button3">ลบ</button>
+ -->
 
 <!--         <a class="btn btn-danger" href="/todo/logout" role="button">logout</a> -->
