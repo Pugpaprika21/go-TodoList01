@@ -5,20 +5,20 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-header">
-                    New todo : {{ .user.username }} {{ .user.password }} {{ .nowDMY }}
+                    New todo : {{ .user.username }} {{ .user.password }}
                 </div>
                 <div class="card-body">
                     <div class="form-craete-todo">
                         <form id="submit-form-todo" action="/todo/create" method="post">
                             <div class="mb-3">
-                                <label for="title" class="form-label">หัวข้อ</label>
+                                <label for="title" class="form-label">หัวข้อ : </label>
                                 <input type="text" class="form-control" id="title" name="title">
                             </div>
                             <div class="mb-3">
-                                <label for="description" class="form-label">รายละเอียด</label>
+                                <label for="description" class="form-label">รายละเอียด : </label>
                                 <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                             </div>
-                            <button type="button" class="btn btn-primary" id="btn-create-todo">save</button>
+                            <button type="button" class="btn-form btn-save" id="btn-create-todo">บันทึก</button>
                         </form>
                     </div>
                 </div>
@@ -28,7 +28,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-user-todo">
-                        <table class="table table-borderless" id="table-todo" class="display">
+                        <table class="table table-sm table-bordered" id="table-todo" class="display">
                             <thead>
                                 <tr>
                                     <td>#</td>
@@ -42,24 +42,48 @@
                                 {{ $nowDMY := .nowDMY }}
                                 <!--  -->
                                 {{ range $index, $todo := .todos }}
-                                <tr id="{{ $index }}">
-                                    <td>{{ Rows $index }}</td>
+                                <!--  -->
+                                {{ $num := Rows $index }}
+                                <!--  -->
+                                {{ $todoDMY := DMY $todo.CreatedAt }}
+                                <!--  -->
+                                <tr id="tr_{{ $num }}">
+                                    <td>{{ $num }}</td>
                                     <td>{{ $todo.Title }}</td>
                                     <td>{{ $todo.Description }}</td>
-                                    <td>{{ DMY $todo.CreatedAt }} </td>
-                                    <td>
-                                        {{ $todoDMY := DMY $todo.CreatedAt }}
-                                        <!--  -->
+                                    <td>{{ $todoDMY }} </td>
+                                    <td class="text-center">
                                         {{ if eq $todoDMY $nowDMY }}
-                                        <button class="button button5">แก้ไข</button>
-                                        <button class="button button3">ลบ</button>
+                                        <button class="button btn-close-todo">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                            </svg>
+                                        </button>
+                                        <button class="button btn-edit" onclick="editTodo('{{ $todo.ID }}');">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                                                <path
+                                                    d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />
+                                            </svg>
+                                        </button>
+                                        <button class="button btn-delete" onclick="deleteTodo('{{ $todo.ID }}');">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                            </svg>
+                                        </button>
+                                        <!--  -->
+                                        {{ else }}
+                                        <!-- <button class="button button5" disabled>แก้ไข</button>
+                                        <button class="button button3" disabled>ลบ</button> -->
                                         <!--  -->
                                         {{ end }}
                                     </td>
                                 </tr>
                                 {{ end }}
-
-
 
                             </tbody>
                         </table>
@@ -71,11 +95,3 @@
 </div>
 
 {{ template "layout/footer.html" .}}
-
-<!-- 
-
-                   <button class="button button5">เเก้ไข</button>
-                                        <button class="button button3">ลบ</button>
- -->
-
-<!--         <a class="btn btn-danger" href="/todo/logout" role="button">logout</a> -->

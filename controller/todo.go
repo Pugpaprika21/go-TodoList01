@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"go-TodoList/db"
 	"go-TodoList/model"
 	"net/http"
@@ -62,12 +61,10 @@ func (t *Todo) Index(ctx *gin.Context) {
 	}
 
 	var todos []model.Todo
-	db.Conn.Order("created_at DESC").Where("user_id = ?", userId).Find(&todos)
+	db.Conn.Order("created_at DESC").Where("created_at IS NOT NULL AND user_id = ?", userId).Find(&todos)
 
 	currentTime := time.Now()
 	dmyFormat := currentTime.Format("2006-01-02")
-	fmt.Println("######################################################")
-	fmt.Println(dmyFormat)
 
 	ctx.HTML(http.StatusOK, "todo.html", gin.H{
 		"user": gin.H{
@@ -100,7 +97,7 @@ func (t *Todo) Create(ctx *gin.Context) {
 	}
 
 	db.Conn.Create(&todo)
-	ctx.Redirect(http.StatusSeeOther, "/todo/index")
+	ctx.Redirect(http.StatusSeeOther, "/todo/index?msg=created")
 }
 
 func (t *Todo) Edit(ctx *gin.Context) {
@@ -109,6 +106,18 @@ func (t *Todo) Edit(ctx *gin.Context) {
 	userId := session.Get("userId")
 
 	ctx.String(http.StatusAccepted, todoId+""+userId.(string))
+}
+
+func (t *Todo) Delete(ctx *gin.Context) {
+	todoId := ctx.Param("id")
+	if todoId != "" {
+		ctx.JSON(http.StatusOK, gin.H{
+			"todoId": todoId,
+		})
+		return
+	}
+
+	//ctx.String(http.StatusAccepted, todoId+""+userId.(string))
 }
 
 func (t *Todo) Logout(ctx *gin.Context) {

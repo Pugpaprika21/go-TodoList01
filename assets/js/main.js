@@ -1,3 +1,11 @@
+function editTodo(todoId) {
+    console.log(todoId);
+}
+
+function deleteTodo(todoId) {
+    console.log(todoId);
+}
+
 $(function() {
     $("#table-todo").DataTable({
         scrollY: 500,

@@ -12,7 +12,11 @@ func serveRoutes(router *gin.Engine) {
 
 	todoGroup.GET("/login", todoController.Login)
 	todoGroup.POST("/checkLogin", todoController.CheckLogin)
-	todoGroup.GET("/index", todoController.Index)
-	todoGroup.POST("/create", todoController.Create)
 	todoGroup.GET("/logout", todoController.Logout)
+
+	todoGroup.GET("/index", todoController.Index)
+
+	todoGroup.POST("/create", todoController.Create)
+	todoGroup.DELETE("/delete/:id", todoController.Delete)
+
 }
