@@ -100,12 +100,14 @@ func (t *Todo) Index(ctx *gin.Context) {
 		pages = append(pages, i)
 	}
 
+	userData := gin.H{
+		"userId":   userId,
+		"username": username,
+		"password": password,
+	}
+
 	ctx.HTML(http.StatusOK, "todo.html", gin.H{
-		"user": gin.H{
-			"userId":   userId,
-			"username": username,
-			"password": password,
-		},
+		"user":         userData,
 		"nowDMY":       dmyFormat,
 		"todos":        todos,
 		"currentPage":  page,
