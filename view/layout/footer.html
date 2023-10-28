@@ -40,9 +40,10 @@
                                     'ลบข้อมูลสำเร็จ!',
                                     '',
                                     'success'
-                                )
+                                ).then(resp => {
+                                    window.location.href = "/todo/index";
+                                });
                             }
-                            //console.log(response);
                         }
                     });
 
@@ -64,9 +65,9 @@
             Swal.fire('เพิ่มข้อมูล task สำเร็จ', '', 'success');
         }
 
-        $("#table-todo").DataTable({
-            scrollY: 500,
-        });
+        // $("#table-todo").DataTable({
+        //     scrollY: 500,
+        // });
         $("#btn-create-todo").click(function(e) {
             e.preventDefault();
             let title = $("#title").val();

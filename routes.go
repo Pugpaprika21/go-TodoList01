@@ -7,6 +7,7 @@ import (
 )
 
 func serveRoutes(router *gin.Engine) {
+	//
 	todoController := controller.Todo{}
 	todoGroup := router.Group("/todo")
 
@@ -18,5 +19,4 @@ func serveRoutes(router *gin.Engine) {
 
 	todoGroup.POST("/create", todoController.Create)
 	todoGroup.DELETE("/delete/:id", todoController.Delete)
-
 }

@@ -28,7 +28,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-user-todo">
-                        <table class="table table-sm table-bordered" id="table-todo" class="display">
+                        <table class="table table-sm table-bordered text-center" id="table-todo" class="display">
                             <thead>
                                 <tr>
                                     <td>#</td>
@@ -52,7 +52,7 @@
                                     <td>{{ $todo.Title }}</td>
                                     <td>{{ $todo.Description }}</td>
                                     <td>{{ $todoDMY }} </td>
-                                    <td class="text-center">
+                                    <td>
                                         {{ if eq $todoDMY $nowDMY }}
                                         <button class="button btn-close-todo">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -87,6 +87,27 @@
 
                             </tbody>
                         </table>
+                        <!-- pagination -->
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <li class="page-item{{ if not .prevPage }} disabled{{ end }}">
+                                    <a class="page-link" href="/todos/index?page={{ .prevPage }}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                {{ range .pages }}
+                                <li class="page-item{{ if eq . $.currentPage }} active{{ end }}">
+                                    <a class="page-link" href="/todos/index?page={{ . }}">{{ . }}</a>
+                                </li>
+                                {{ end }}
+                                <li class="page-item{{ if not .nextPage }} disabled{{ end }}">
+                                    <a class="page-link" href="/todos/index?page={{ .nextPage }}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <!-- pagination -->
                     </div>
                 </div>
             </div>
