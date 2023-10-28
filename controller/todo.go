@@ -135,6 +135,7 @@ func (t *Todo) Create(ctx *gin.Context) {
 	todo := model.Todo{
 		Title:       title,
 		Description: description,
+		Active:      "N",
 		UserID:      userId.(uint),
 	}
 
