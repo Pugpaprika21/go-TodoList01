@@ -91,18 +91,18 @@
                         <nav aria-label="Page navigation example">
                             <ul class="pagination">
                                 <li class="page-item{{ if not .prevPage }} disabled{{ end }}">
-                                    <a class="page-link" href="/todos/index?page={{ .prevPage }}" aria-label="Previous">
+                                    <a class="page-link" href="/todo/index?page={{ .prevPage }}" aria-label="Previous">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
                                 {{ range .pages }}
                                 <li class="page-item{{ if eq . $.currentPage }} active{{ end }}">
-                                    <a class="page-link" href="/todos/index?page={{ . }}">{{ . }}</a>
+                                    <a class="page-link" href="/todo/index?page={{ . }}">{{ . }}</a>
                                 </li>
                                 {{ end }}
                                 <li class="page-item{{ if not .nextPage }} disabled{{ end }}">
                                     {{ if .nextPage }}
-                                    <a class="page-link" href="/todos/index?page={{ .nextPage }}" aria-label="Next">
+                                    <a class="page-link" href="/todo/index?page={{ .nextPage }}" aria-label="Next">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                     {{ end }}

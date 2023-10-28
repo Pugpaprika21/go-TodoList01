@@ -118,35 +118,6 @@ func (t *Todo) Index(ctx *gin.Context) {
 	})
 }
 
-// func (t *Todo) Index(ctx *gin.Context) {
-// 	session := sessions.Default(ctx)
-// 	userId := session.Get("userId")
-// 	username := session.Get("username")
-// 	password := session.Get("password")
-
-// 	if userId == nil {
-// 		ctx.Redirect(http.StatusSeeOther, "/todo/login")
-// 		return
-// 	}
-
-// 	var todos []model.Todo
-// 	db.Conn.Order("created_at DESC").Where("created_at IS NOT NULL AND user_id = ?", userId).Find(&todos)
-
-// 	currentTime := time.Now()
-// 	dmyFormat := currentTime.Format("2006-01-02")
-
-// 	ctx.HTML(http.StatusOK, "todo.html", gin.H{
-// 		"user": gin.H{
-// 			"userId":   userId,
-// 			"username": username,
-// 			"password": password,
-// 		},
-// 		"nowDMY": dmyFormat,
-// 		"todos":  todos,
-// 		"title":  "Todo-list",
-// 	})
-// }
-
 func (t *Todo) Create(ctx *gin.Context) {
 	session := sessions.Default(ctx)
 
