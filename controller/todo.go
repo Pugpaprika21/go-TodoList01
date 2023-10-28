@@ -116,7 +116,6 @@ func (t *Todo) Index(ctx *gin.Context) {
 		"nextPage":     nextPage,
 		"pages":        pages,
 	})
-
 }
 
 // func (t *Todo) Index(ctx *gin.Context) {
