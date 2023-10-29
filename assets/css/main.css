@@ -29,11 +29,11 @@
 .btn-close-todo {
     background-color: white;
     color: black;
-    border: 2px solid #4CAF50;
+    border: 2px solid #00ff08;
 }
 
 .btn-close-todo:hover {
-    background-color: #4CAF50;
+    background-color: #00ff08;
     color: white;
 }
 

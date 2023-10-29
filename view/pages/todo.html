@@ -27,6 +27,27 @@
         <div class="col-sm-8">
             <div class="card">
                 <div class="card-body">
+
+                    <div class="filter-todo">
+                        <form action="/todo/index" method="GET">
+                            <div class="row g-2">
+                                <div class="col-md">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1">วันที่สร้าง</span>
+                                        <input type="date" class="form-control" id="filterCreateAt" name="filterCreateAt">
+                                    </div>
+                                </div>
+                                <div class="col-md">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1">วันที่ปิดงาน</span>
+                                        <input type="date" class="form-control" id="filterCloseTodo" name="filterCloseTodo">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+
                     <div class="table-user-todo">
                         <table class="table table-sm table-bordered text-center" id="table-todo" class="display">
                             <thead>
@@ -88,7 +109,7 @@
                         </table>
                         <!-- pagination -->
                         <nav aria-label="Page navigation example">
-                            <ul class="pagination">
+                            <ul class="pagination justify-content-end">
                                 <li class="page-item{{ if not .prevPage }} disabled{{ end }}">
                                     <a class="page-link" href="/todo/index?page={{ .prevPage }}" aria-label="Previous">
                                         <span aria-hidden="true">&laquo;</span>
