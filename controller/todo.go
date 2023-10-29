@@ -2,6 +2,7 @@ package controller
 
 import (
 	"go-TodoList/db"
+	"go-TodoList/dto"
 	"go-TodoList/model"
 	"math"
 	"net/http"
@@ -51,6 +52,75 @@ func (t *Todo) CheckLogin(ctx *gin.Context) {
 	ctx.Redirect(http.StatusSeeOther, "/todo/index")
 }
 
+// func (t *Todo) Index(ctx *gin.Context) {
+// 	session := sessions.Default(ctx)
+// 	userId := session.Get("userId")
+// 	username := session.Get("username")
+// 	password := session.Get("password")
+
+// 	currentTime := time.Now()
+// 	dmyFormat := currentTime.Format("2006-01-02")
+
+// 	if userId == nil {
+// 		ctx.Redirect(http.StatusSeeOther, "/todo/login")
+// 		return
+// 	}
+
+// 	pageStr := ctx.DefaultQuery("page", "1")
+// 	page, err := strconv.Atoi(pageStr)
+// 	if err != nil {
+// 		ctx.AbortWithStatus(http.StatusBadRequest)
+// 		return
+// 	}
+
+// 	var perPage = 10
+// 	var todoCount int64
+// 	db.Conn.Model(&model.Todo{}).Where("created_at IS NOT NULL AND user_id = ?", userId).Count(&todoCount)
+
+// 	pageCount := int(math.Ceil(float64(todoCount) / float64(perPage)))
+
+// 	if page < 1 || page > pageCount {
+// 		ctx.AbortWithStatus(http.StatusBadRequest)
+// 		return
+// 	}
+
+// 	offset := (page - 1) * perPage
+
+// 	var todos []model.Todo
+// 	db.Conn.Where("created_at IS NOT NULL AND user_id = ?", userId).
+// 		Order("created_at DESC").
+// 		Offset(offset).
+// 		Limit(perPage).
+// 		Find(&todos)
+
+// 	prevPage := page - 1
+// 	nextPage := page + 1
+
+// 	var pages []int
+// 	for i := 1; i <= pageCount; i++ {
+// 		pages = append(pages, i)
+// 	}
+
+// 	userData := gin.H{
+// 		"userId":   userId,
+// 		"username": username,
+// 		"password": password,
+// 	}
+
+// 	ctx.HTML(http.StatusOK, "todo.html", gin.H{
+// 		"user":         userData,
+// 		"nowDMY":       dmyFormat,
+// 		"todos":        todos,
+// 		"currentPage":  page,
+// 		"totalCount":   int(todoCount),
+// 		"itemsPerPage": perPage,
+// 		"pageCount":    pageCount,
+// 		"prevPage":     prevPage,
+// 		"nextPage":     nextPage,
+// 		"pages":        pages,
+// 	})
+// }
+
 func (t *Todo) Index(ctx *gin.Context) {
 	session := sessions.Default(ctx)
 	userId := session.Get("userId")
@@ -67,18 +137,18 @@ func (t *Todo) Index(ctx *gin.Context) {
 
 	pageStr := ctx.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pageStr)
-	if err != nil {
+	if err != nil || page < 1 { // ตรวจสอบค่า page ที่ไม่ถูกต้อง
 		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
 	var perPage = 10
-	var bookCount int64
-	db.Conn.Model(&model.Todo{}).Where("created_at IS NOT NULL AND user_id = ?", userId).Count(&bookCount)
+	var todoCount int64
+	db.Conn.Model(&model.Todo{}).Where("created_at IS NOT NULL AND user_id = ?", userId).Count(&todoCount)
 
-	pageCount := int(math.Ceil(float64(bookCount) / float64(perPage)))
+	pageCount := int(math.Ceil(float64(todoCount) / float64(perPage)))
 
-	if page < 1 || page > pageCount {
+	if page > pageCount { // ตรวจสอบค่า page ที่ไม่ถูกต้อง
 		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
@@ -94,6 +164,10 @@ func (t *Todo) Index(ctx *gin.Context) {
 
 	prevPage := page - 1
 	nextPage := page + 1
+
+	if nextPage > pageCount { // ตรวจสอบค่า nextPage ที่ไม่ถูกต้อง
+		nextPage = 0
+	}
 
 	var pages []int
 	for i := 1; i <= pageCount; i++ {
@@ -111,7 +185,7 @@ func (t *Todo) Index(ctx *gin.Context) {
 		"nowDMY":       dmyFormat,
 		"todos":        todos,
 		"currentPage":  page,
-		"totalCount":   int(bookCount),
+		"totalCount":   int(todoCount),
 		"itemsPerPage": perPage,
 		"pageCount":    pageCount,
 		"prevPage":     prevPage,
@@ -143,19 +217,28 @@ func (t *Todo) Create(ctx *gin.Context) {
 	ctx.Redirect(http.StatusSeeOther, "/todo/index?msg=created")
 }
 
-func (t *Todo) Edit(ctx *gin.Context) {
+func (t *Todo) Update(ctx *gin.Context) {
 	todoId := ctx.Param("id")
-	session := sessions.Default(ctx)
-	userId := session.Get("userId")
+	if db.Conn.Model(&model.Todo{}).Where("id = ?", todoId).Update("active", "Y").Error != nil {
+		ctx.JSON(http.StatusOK, dto.TodoResponse{
+			Status:  200,
+			Message: "ปิดงานไม่สำเร็จ",
+		})
+	}
 
-	ctx.String(http.StatusAccepted, todoId+""+userId.(string))
+	ctx.JSON(http.StatusOK, dto.TodoResponse{
+		Status:  200,
+		Message: "ปิดงานสำเร็จ",
+	})
 }
 
 func (t *Todo) Delete(ctx *gin.Context) {
 	todoId := ctx.Param("id")
+
 	db.Conn.Delete(&model.Todo{}, todoId)
-	ctx.JSON(http.StatusOK, gin.H{
-		"todoId": todoId,
+	ctx.JSON(http.StatusOK, dto.TodoResponse{
+		Status:  200,
+		Message: "ลบข้อมูลสำเร็จ",
 	})
 }
 

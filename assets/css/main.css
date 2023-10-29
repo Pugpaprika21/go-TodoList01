@@ -1,6 +1,15 @@
-/* body {
-    font-family: Mitr, sans-serif;
-} */
+.card {
+    border-radius: 0px;
+}
+
+.card-header {
+    color: aliceblue;
+    background-color: #4155ed;
+}
+
+.card-body {
+    border-radius: 0px;
+}
 
 .button {
     background-color: #4CAF50;
