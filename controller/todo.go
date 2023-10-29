@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"go-TodoList/db"
 	"go-TodoList/dto"
 	"go-TodoList/model"
@@ -73,7 +74,7 @@ func (t *Todo) Index(ctx *gin.Context) {
 		return
 	}
 
-	var perPage = 10
+	var perPage = 12
 	var todoCount int64
 	db.Conn.Model(&model.Todo{}).Where("created_at IS NOT NULL AND user_id = ?", userId).Count(&todoCount)
 
@@ -111,6 +112,12 @@ func (t *Todo) Index(ctx *gin.Context) {
 		"password": password,
 	}
 
+	fileTimestamp := time.Now().Format("20060102150405")
+
+	assetsURL := make(map[string]string)
+	assetsURL["css"] = fmt.Sprintf("/assets/css/main.css?v=%s", fileTimestamp)
+	assetsURL["js"] = fmt.Sprintf("/assets/js/main.js?v=%s", fileTimestamp)
+
 	ctx.HTML(http.StatusOK, "todo.html", gin.H{
 		"user":         userData,
 		"nowDMY":       dmyFormat,
@@ -122,6 +129,7 @@ func (t *Todo) Index(ctx *gin.Context) {
 		"prevPage":     prevPage,
 		"nextPage":     nextPage,
 		"pages":        pages,
+		"assetsURL":    assetsURL,
 	})
 }
 
@@ -165,8 +173,13 @@ func (t *Todo) Update(ctx *gin.Context) {
 
 func (t *Todo) Delete(ctx *gin.Context) {
 	todoId := ctx.Param("id")
+	if db.Conn.Delete(&model.Todo{}, todoId).Error != nil {
+		ctx.JSON(http.StatusOK, dto.TodoResponse{
+			Status:  200,
+			Message: "ลบข้อมูลไม่สำเร็จ",
+		})
+	}
 
-	db.Conn.Delete(&model.Todo{}, todoId)
 	ctx.JSON(http.StatusOK, dto.TodoResponse{
 		Status:  200,
 		Message: "ลบข้อมูลสำเร็จ",

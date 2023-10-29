@@ -1,11 +1,18 @@
-{{ template "layout/header.html" .}}
+{{ template "layout/header.html" .assetsURL.css}}
+<!--  -->
 
-<div class="container" style="margin-top: 50px;">
+{{ $navTitle := "เพิ่มกิจกรรม" }}
+
+<!--  -->
+<div class="container navbar-top">
+    {{ template "layout/navbar.html" $navTitle}}
+</div>
+<div class="container" style="margin-top: 15px;">
     <div class="row">
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-header">
-                    New todo : {{ .user.username }} {{ .user.password }}
+                    เพิ่มกิจกรรม : {{ .user.username }} {{ .user.password }}
                 </div>
                 <div class="card-body">
                     <div class="form-craete-todo">
@@ -29,7 +36,7 @@
                 <div class="card-body">
 
                     <div class="filter-todo">
-                        <form action="/todo/index" method="GET">
+                        <form action="/todo/index?search=Y" method="GET">
                             <div class="row g-2">
                                 <div class="col-md">
                                     <div class="input-group mb-3">
@@ -60,6 +67,9 @@
                                 </tr>
                             </thead>
                             <tbody>
+
+                                {{ if gt .totalCount 0 }}
+                                <!--  -->
                                 {{ $nowDMY := .nowDMY }}
                                 <!--  -->
                                 {{ range $index, $todo := .todos }}
@@ -104,6 +114,8 @@
                                     </td>
                                 </tr>
                                 {{ end }}
+                                <!---->
+                                {{ end }}
 
                             </tbody>
                         </table>
@@ -112,7 +124,7 @@
                             <ul class="pagination justify-content-end">
                                 <li class="page-item{{ if not .prevPage }} disabled{{ end }}">
                                     <a class="page-link" href="/todo/index?page={{ .prevPage }}" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
+                                        <span aria-hidden="true">ก่อนหน้า</span>
                                     </a>
                                 </li>
                                 {{ range .pages }}
@@ -123,7 +135,7 @@
                                 <li class="page-item{{ if not .nextPage }} disabled{{ end }}">
                                     {{ if .nextPage }}
                                     <a class="page-link" href="/todo/index?page={{ .nextPage }}" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
+                                        <span aria-hidden="true">ต่อไป</span>
                                     </a>
                                     {{ end }}
                                 </li>
@@ -137,4 +149,4 @@
     </div>
 </div>
 
-{{ template "layout/footer.html" .}}
+{{ template "layout/footer.html" .assetsURL.js}}
