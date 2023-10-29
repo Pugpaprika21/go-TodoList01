@@ -15,7 +15,6 @@ import (
 )
 
 func main() {
-
 	if os.Getenv("APP_ENV") == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	} else {

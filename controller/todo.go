@@ -52,75 +52,6 @@ func (t *Todo) CheckLogin(ctx *gin.Context) {
 	ctx.Redirect(http.StatusSeeOther, "/todo/index")
 }
 
-// func (t *Todo) Index(ctx *gin.Context) {
-// 	session := sessions.Default(ctx)
-// 	userId := session.Get("userId")
-// 	username := session.Get("username")
-// 	password := session.Get("password")
-
-// 	currentTime := time.Now()
-// 	dmyFormat := currentTime.Format("2006-01-02")
-
-// 	if userId == nil {
-// 		ctx.Redirect(http.StatusSeeOther, "/todo/login")
-// 		return
-// 	}
-
-// 	pageStr := ctx.DefaultQuery("page", "1")
-// 	page, err := strconv.Atoi(pageStr)
-// 	if err != nil {
-// 		ctx.AbortWithStatus(http.StatusBadRequest)
-// 		return
-// 	}
-
-// 	var perPage = 10
-// 	var todoCount int64
-// 	db.Conn.Model(&model.Todo{}).Where("created_at IS NOT NULL AND user_id = ?", userId).Count(&todoCount)
-
-// 	pageCount := int(math.Ceil(float64(todoCount) / float64(perPage)))
-
-// 	if page < 1 || page > pageCount {
-// 		ctx.AbortWithStatus(http.StatusBadRequest)
-// 		return
-// 	}
-
-// 	offset := (page - 1) * perPage
-
-// 	var todos []model.Todo
-// 	db.Conn.Where("created_at IS NOT NULL AND user_id = ?", userId).
-// 		Order("created_at DESC").
-// 		Offset(offset).
-// 		Limit(perPage).
-// 		Find(&todos)
-
-// 	prevPage := page - 1
-// 	nextPage := page + 1
-
-// 	var pages []int
-// 	for i := 1; i <= pageCount; i++ {
-// 		pages = append(pages, i)
-// 	}
-
-// 	userData := gin.H{
-// 		"userId":   userId,
-// 		"username": username,
-// 		"password": password,
-// 	}
-
-// 	ctx.HTML(http.StatusOK, "todo.html", gin.H{
-// 		"user":         userData,
-// 		"nowDMY":       dmyFormat,
-// 		"todos":        todos,
-// 		"currentPage":  page,
-// 		"totalCount":   int(todoCount),
-// 		"itemsPerPage": perPage,
-// 		"pageCount":    pageCount,
-// 		"prevPage":     prevPage,
-// 		"nextPage":     nextPage,
-// 		"pages":        pages,
-// 	})
-// }
-
 func (t *Todo) Index(ctx *gin.Context) {
 	session := sessions.Default(ctx)
 	userId := session.Get("userId")
@@ -137,7 +68,7 @@ func (t *Todo) Index(ctx *gin.Context) {
 
 	pageStr := ctx.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pageStr)
-	if err != nil || page < 1 { // ตรวจสอบค่า page ที่ไม่ถูกต้อง
+	if err != nil || page < 1 {
 		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
@@ -148,7 +79,7 @@ func (t *Todo) Index(ctx *gin.Context) {
 
 	pageCount := int(math.Ceil(float64(todoCount) / float64(perPage)))
 
-	if page > pageCount { // ตรวจสอบค่า page ที่ไม่ถูกต้อง
+	if page > pageCount {
 		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
@@ -165,7 +96,7 @@ func (t *Todo) Index(ctx *gin.Context) {
 	prevPage := page - 1
 	nextPage := page + 1
 
-	if nextPage > pageCount { // ตรวจสอบค่า nextPage ที่ไม่ถูกต้อง
+	if nextPage > pageCount {
 		nextPage = 0
 	}
 
