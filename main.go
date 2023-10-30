@@ -18,7 +18,7 @@ func main() {
 	if os.Getenv("APP_ENV") == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	} else {
-		if err := godotenv.Load(); err != nil {
+		if err := godotenv.Load(); err != nil { // dev
 			log.Fatal("Error Loading .env file")
 		}
 	}

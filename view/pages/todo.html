@@ -36,24 +36,34 @@
                 <div class="card-body">
 
                     <div class="filter-todo">
-                        <form action="/todo/index?search=Y" method="GET">
+                        <form action="/todo/index" method="GET">
                             <div class="row g-2">
+                                <input type="hidden" id="search" name="search" value="Y">
                                 <div class="col-md">
-                                    <div class="input-group mb-3">
+                                    <div class="input-group mb-2">
                                         <span class="input-group-text" id="basic-addon1">วันที่สร้าง</span>
-                                        <input type="date" class="form-control" id="filterCreateAt" name="filterCreateAt">
+                                        <input type="date" class="form-control" id="date_create" name="date_create">
                                     </div>
                                 </div>
                                 <div class="col-md">
-                                    <div class="input-group mb-3">
+                                    <div class="input-group mb-2">
                                         <span class="input-group-text" id="basic-addon1">วันที่ปิดงาน</span>
-                                        <input type="date" class="form-control" id="filterCloseTodo" name="filterCloseTodo">
+                                        <input type="date" class="form-control" id="date_close" name="date_close">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-md">
+                                    &nbsp;
+                                </div>
+                                <div class="col-md">
+                                    <div class="input-group mb-2">
+                                        <button type="submit" class="btn btn-primary">ค้นหา</button>
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
-
 
                     <div class="table-user-todo">
                         <table class="table table-sm table-bordered text-center" id="table-todo" class="display">
