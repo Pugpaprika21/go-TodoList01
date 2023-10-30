@@ -152,7 +152,7 @@ func (t *Todo) Create(ctx *gin.Context) {
 		UserID:      userId.(uint),
 	}
 
-	if db.Conn.Create(&todo).Error != nil {
+	if db.Conn.Create(&todo).Error == nil {
 		ctx.Redirect(http.StatusSeeOther, "/todo/index?msg=created")
 		return
 	}
