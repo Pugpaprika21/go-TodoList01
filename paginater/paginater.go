@@ -13,7 +13,7 @@
 // under the License.
 
 // Package paginater is a helper module for custom pagination calculation.
-package helper
+package paginater
 
 // Paginater represents a set of results of pagination calculations.
 type Paginater struct {
@@ -23,14 +23,8 @@ type Paginater struct {
 	numPages  int
 }
 
-// Arguments:
-// - Total number of rows (จำนวนทั้งหมดของรายการ)
-// - Number of rows in one page (จำนวนรายการในแต่ละหน้า)
-// - Current page number (หมายเลขหน้าปัจจุบัน)
-// - Number of page links to be displayed (จำนวนลิงค์หน้าที่จะแสดง)
-
 // New initialize a new pagination calculation and returns a Paginater as result.
-func NewPaginater(total, pagingNum, current, numPages int) *Paginater {
+func New(total, pagingNum, current, numPages int) *Paginater {
 	if pagingNum <= 0 {
 		pagingNum = 1
 	}

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"go-TodoList/db"
 	"go-TodoList/dto"
-	"go-TodoList/helper"
 	"go-TodoList/model"
+	"go-TodoList/paginater"
 	"net/http"
 	"strconv"
 	"time"
@@ -92,7 +92,7 @@ func (t *Todo) Index(ctx *gin.Context) {
 	assetsURL["css"] = fmt.Sprintf("/assets/css/main.css?v=%s", fileTimestamp)
 	assetsURL["js"] = fmt.Sprintf("/assets/js/main.js?v=%s", fileTimestamp)
 
-	p := helper.NewPaginater(int(todoCount), perPage, 10, 10)
+	p := paginater.New(int(todoCount), perPage, 10, 10)
 
 	ctx.HTML(http.StatusOK, "todo.html", gin.H{
 		"user": gin.H{
