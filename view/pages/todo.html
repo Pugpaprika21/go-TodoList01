@@ -129,29 +129,34 @@
 
                             </tbody>
                         </table>
-                        <!-- pagination -->
+
                         <nav aria-label="Page navigation example">
                             <ul class="pagination justify-content-end">
-                                <li class="page-item{{ if not .prevPage }} disabled{{ end }}">
-                                    <a class="page-link" href="/todo/index?page={{ .prevPage }}" aria-label="Previous">
-                                        <span aria-hidden="true">ก่อนหน้า</span>
-                                    </a>
+                                {{if not .Page.IsFirst}}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1">อันดับแรก</a>
                                 </li>
-                                {{ range .pages }}
-                                <li class="page-item{{ if eq . $.currentPage }} active{{ end }}">
-                                    <a class="page-link" href="/todo/index?page={{ . }}">{{ . }}</a>
+                                {{end}} {{if .Page.HasPrevious}}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{.Page.Previous}}">ก่อนหน้า</a>
                                 </li>
-                                {{ end }}
-                                <li class="page-item{{ if not .nextPage }} disabled{{ end }}">
-                                    {{ if .nextPage }}
-                                    <a class="page-link" href="/todo/index?page={{ .nextPage }}" aria-label="Next">
-                                        <span aria-hidden="true">ต่อไป</span>
-                                    </a>
-                                    {{ end }}
+                                {{end}} {{range .Page.Pages}}
+                                <li class="page-item">
+                                    {{if eq .Num -1}}
+                                    <span class="page-link">...</span> {{else}}
+                                    <a class="page-link{{if .IsCurrent}} current{{end}}" href="?page={{.Num}}">{{.Num}}</a> {{end}}
                                 </li>
+                                {{end}} {{if .Page.HasNext}}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{.Page.Next}}">ต่อไป</a>
+                                </li>
+                                {{end}} {{if not .Page.IsLast}}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{.Page.TotalPages}}">สุดท้าย</a>
+                                </li>
+                                {{end}}
                             </ul>
                         </nav>
-                        <!-- pagination -->
                     </div>
                 </div>
             </div>

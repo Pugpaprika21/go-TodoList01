@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"go-TodoList/db"
 	"go-TodoList/dto"
+	"go-TodoList/helper"
 	"go-TodoList/model"
-	"math"
 	"net/http"
 	"strconv"
 	"time"
@@ -59,9 +59,6 @@ func (t *Todo) Index(ctx *gin.Context) {
 	username := session.Get("username")
 	password := session.Get("password")
 
-	currentTime := time.Now()
-	dmyFormat := currentTime.Format("2006-01-02")
-
 	if userId == nil {
 		ctx.Redirect(http.StatusSeeOther, "/todo/login")
 		return
@@ -78,13 +75,6 @@ func (t *Todo) Index(ctx *gin.Context) {
 	var todoCount int64
 	db.Conn.Model(&model.Todo{}).Where("created_at IS NOT NULL AND user_id = ?", userId).Count(&todoCount)
 
-	pageCount := int(math.Ceil(float64(todoCount) / float64(perPage)))
-
-	if page > pageCount {
-		ctx.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
-
 	offset := (page - 1) * perPage
 
 	var todos []model.Todo
@@ -94,42 +84,29 @@ func (t *Todo) Index(ctx *gin.Context) {
 		Limit(perPage).
 		Find(&todos)
 
-	prevPage := page - 1
-	nextPage := page + 1
-
-	if nextPage > pageCount {
-		nextPage = 0
-	}
-
-	var pages []int
-	for i := 1; i <= pageCount; i++ {
-		pages = append(pages, i)
-	}
-
-	userData := gin.H{
-		"userId":   userId,
-		"username": username,
-		"password": password,
-	}
-
+	currentTime := time.Now()
+	dmyFormat := currentTime.Format("2006-01-02")
 	fileTimestamp := time.Now().Format("20060102150405")
 
 	assetsURL := make(map[string]string)
 	assetsURL["css"] = fmt.Sprintf("/assets/css/main.css?v=%s", fileTimestamp)
 	assetsURL["js"] = fmt.Sprintf("/assets/js/main.js?v=%s", fileTimestamp)
 
+	p := helper.NewPaginater(int(todoCount), perPage, 10, 10)
+
 	ctx.HTML(http.StatusOK, "todo.html", gin.H{
-		"user":         userData,
+		"user": gin.H{
+			"userId":   userId,
+			"username": username,
+			"password": password,
+		},
 		"nowDMY":       dmyFormat,
 		"todos":        todos,
 		"currentPage":  page,
 		"totalCount":   int(todoCount),
 		"itemsPerPage": perPage,
-		"pageCount":    pageCount,
-		"prevPage":     prevPage,
-		"nextPage":     nextPage,
-		"pages":        pages,
 		"assetsURL":    assetsURL,
+		"Page":         p,
 	})
 }
 
