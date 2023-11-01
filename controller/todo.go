@@ -71,7 +71,7 @@ func (t *Todo) Index(ctx *gin.Context) {
 		return
 	}
 
-	var perPage = 12
+	var perPage = 10
 	var todoCount int64
 	db.Conn.Model(&model.Todo{}).Where("created_at IS NOT NULL AND user_id = ?", userId).Count(&todoCount)
 
