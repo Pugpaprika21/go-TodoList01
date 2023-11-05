@@ -35,7 +35,7 @@
             <div class="card">
                 <div class="card-body">
 
-                    <div class="filter-todo">
+                    <!-- <div class="filter-todo">
                         <form action="/todo/index" method="GET">
                             <div class="row g-2">
                                 <input type="hidden" id="search" name="search" value="Y">
@@ -52,7 +52,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- <div class="row g-2">
+                            <div class="row g-2">
                                 <div class="col-md">
                                     &nbsp;
                                 </div>
@@ -61,107 +61,110 @@
                                         <button type="submit" class="btn btn-primary">ค้นหา</button>
                                     </div>
                                 </div>
-                            </div> -->
+                            </div>
                         </form>
-                    </div>
+                    </div> -->
 
-                    <div class="table-user-todo">
-                        <table class="table table-sm table-bordered text-center" id="table-todo" class="display">
-                            <thead>
-                                <tr>
-                                    <td>#</td>
-                                    <td>หัวข้อ</td>
-                                    <td>รายละเอียด</td>
-                                    <td>สร้าง</td>
-                                    <td>จัดการ</td>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    <div class="table-responsive">
+                        <div class="table-user-todo">
+                            <table class="table table-sm table-bordered text-center" id="table-todo" class="display">
+                                <thead>
+                                    <tr>
+                                        <td>#</td>
+                                        <td>หัวข้อ</td>
+                                        <td>รายละเอียด</td>
+                                        <td>สร้าง</td>
+                                        <td>จัดการ</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                                {{ if gt .totalCount 0 }}
-                                <!--  -->
-                                {{ $nowDMY := .nowDMY }}
-                                <!--  -->
-                                {{ range $index, $todo := .todos }}
-                                <!--  -->
-                                {{ $num := Rows $index }}
-                                <!--  -->
-                                {{ $todoDMY := DMY $todo.CreatedAt }}
-                                <!--  -->
-                                <tr>
-                                    <td>{{ $num }}</td>
-                                    <td>{{ $todo.Title }}</td>
-                                    <td>{{ $todo.Description }}</td>
-                                    <td>{{ $todoDMY }}</td>
-                                    <td>
-                                        {{ if eq $todoDMY $nowDMY }}
-                                        <!--  -->
-                                        {{ if eq $todo.Active "N" }}
-                                        <!--  -->
-                                        <button class="button btn-close-todo" onclick="closeTodo('{{ $todo.ID }}');">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
-                                                <path
-                                                    d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
-                                            </svg>
-                                        </button>
-                                        <!--  -->
-                                        {{ end }}
+                                    {{ if gt .totalCount 0 }}
+                                    <!--  -->
+                                    {{ $nowDMY := .nowDMY }}
+                                    <!--  -->
+                                    {{ range $index, $todo := .todos }}
+                                    <!--  -->
+                                    {{ $num := Rows $index }}
+                                    <!--  -->
+                                    {{ $todoDMY := DMY $todo.CreatedAt }}
+                                    <!--  -->
+                                    <tr>
+                                        <td>{{ $num }}</td>
+                                        <td>{{ $todo.Title }}</td>
+                                        <td>{{ $todo.Description }}</td>
+                                        <td>{{ $todoDMY }}</td>
+                                        <td>
+                                            {{ if eq $todoDMY $nowDMY }}
+                                            <!--  -->
+                                            {{ if eq $todo.Active "N" }}
+                                            <!--  -->
+                                            <button class="button btn-close-todo" onclick="closeTodo('{{ $todo.ID }}');">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                                </svg>
+                                            </button>
+                                            <!--  -->
+                                            {{ end }}
 
-                                        <button class="button btn-delete" onclick="deleteTodo('{{ $todo.ID }}');">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                                <path
-                                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
-                                            </svg>
-                                        </button>
-                                        <!--  -->
-                                        {{ else }}
-                                        <!-- <button class="button button5" disabled>แก้ไข</button>
+                                            <button class="button btn-delete" onclick="deleteTodo('{{ $todo.ID }}');">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                                </svg>
+                                            </button>
+                                            <!--  -->
+                                            {{ else }}
+                                            <!-- <button class="button button5" disabled>แก้ไข</button>
                                         <button class="button button3" disabled>ลบ</button> -->
-                                        <!--  -->
-                                        {{ end }}
-                                    </td>
-                                </tr>
-                                {{ end }}
-                                <!---->
-                                {{ end }}
+                                            <!--  -->
+                                            {{ end }}
+                                        </td>
+                                    </tr>
+                                    {{ end }}
+                                    <!---->
+                                    {{ end }}
 
-                            </tbody>
-                        </table>
-
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination justify-content-end">
-                                {{if not .Page.IsFirst}}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page=1">อันดับแรก</a>
-                                </li>
-                                {{end}} {{if .Page.HasPrevious}}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{.Page.Previous}}">ก่อนหน้า</a>
-                                </li>
-                                {{end}} {{range .Page.Pages}}
-                                <li class="page-item">
-                                    {{if eq .Num -1}}
-                                    <span class="page-link">...</span> {{else}}
-                                    <a class="page-link{{if .IsCurrent}} current{{end}}" href="?page={{.Num}}">{{.Num}}</a> {{end}}
-                                </li>
-                                {{end}} {{if .Page.HasNext}}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{.Page.Next}}">ต่อไป</a>
-                                </li>
-                                {{end}} {{if not .Page.IsLast}}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{.Page.TotalPages}}">สุดท้าย</a>
-                                </li>
-                                {{end}}
-                            </ul>
-                        </nav>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-end">
+                            {{if not .Page.IsFirst}}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1">อันดับแรก</a>
+                            </li>
+                            {{end}} {{if .Page.HasPrevious}}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{.Page.Previous}}">ก่อนหน้า</a>
+                            </li>
+                            {{end}} {{range .Page.Pages}}
+                            <li class="page-item">
+                                {{if eq .Num -1}}
+                                <span class="page-link">...</span> {{else}}
+                                <a class="page-link{{if .IsCurrent}} current{{end}}" href="?page={{.Num}}">{{.Num}}</a> {{end}}
+                            </li>
+                            {{end}} {{if .Page.HasNext}}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{.Page.Next}}">ต่อไป</a>
+                            </li>
+                            {{end}} {{if not .Page.IsLast}}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{.Page.TotalPages}}">สุดท้าย</a>
+                            </li>
+                            {{end}}
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 {{ template "layout/footer.html" .assetsURL.js}}
